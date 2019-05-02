@@ -83,9 +83,9 @@ module MailCatcher extend self
   @@defaults = {
     :smtp_ip => "127.0.0.1",
     :smtp_port => "1025",
-    :smtp_auth => false,
-    :smtp_user => nil,
-    :smtp_pass => nil,
+    :smtp_auth => ENV['SMTP_AUTH'] ? ENV['SMTP_AUTH'].downcase == "true" : false,
+    :smtp_user => ENV['SMTP_USER'],
+    :smtp_pass => ENV['SMTP_PASS'],
     :http_ip => "127.0.0.1",
     :http_port => "1080",
     :http_path => "/",
