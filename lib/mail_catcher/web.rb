@@ -6,6 +6,12 @@ module MailCatcher
   module Web extend self
     def app
       @@app ||= Rack::Builder.new do
+        if MailCatcher.options[:http_auth]
+          use Rack::Auth::Basic do |username, password|
+            username == MailCatcher.options[:http_user] && password == MailCatcher.options[:http_pass]
+          end
+        end
+
         map(MailCatcher.options[:http_path]) do
           if MailCatcher.development?
             require "mail_catcher/web/assets"

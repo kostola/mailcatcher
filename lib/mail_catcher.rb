@@ -81,14 +81,17 @@ module MailCatcher extend self
   end
 
   @@defaults = {
-    :smtp_ip => "127.0.0.1",
-    :smtp_port => "1025",
+    :smtp_ip   => ENV['SMTP_IP'] ? ENV['SMTP_IP'] : "127.0.0.1",
+    :smtp_port => ENV['SMTP_PORT'] ? ENV['SMTP_PORT'] : "1025",
     :smtp_auth => ENV['SMTP_AUTH'] ? ENV['SMTP_AUTH'].downcase == "true" : false,
     :smtp_user => ENV['SMTP_USER'],
     :smtp_pass => ENV['SMTP_PASS'],
-    :http_ip => "127.0.0.1",
-    :http_port => "1080",
-    :http_path => "/",
+    :http_ip   => ENV['HTTP_IP'] ? ENV['HTTP_IP'] : "127.0.0.1",
+    :http_port => ENV['HTTP_PORT'] ? ENV['HTTP_PORT'] : "1080",
+    :http_auth => ENV['HTTP_AUTH'] ? ENV['HTTP_AUTH'].downcase == "true" : false,
+    :http_user => ENV['HTTP_USER'],
+    :http_pass => ENV['HTTP_PASS'],
+    :http_path => ENV['HTTP_PATH'] ? ENV['HTTP_PATH'] : "/",
     :verbose => false,
     :daemon => !windows?,
     :browse => false,
@@ -139,6 +142,18 @@ module MailCatcher extend self
 
         parser.on("--http-port PORT", Integer, "Set the port address of the http server") do |port|
           options[:http_port] = port
+        end
+
+        parser.on("--http-auth true|false", String, "Enable basic auth in http server (default: false)") do |auth|
+          options[:http_auth] = (auth.downcase == "true")
+        end
+
+        parser.on("--http-user USER", String, "Username of http server auth (only if enabled)") do |user|
+          options[:http_user] = user
+        end
+
+        parser.on("--http-pass PASS", String, "Password of http server auth (only if enabled)") do |pass|
+          options[:http_pass] = pass
         end
 
         parser.on("--http-path PATH", String, "Add a prefix to all HTTP paths") do |path|
